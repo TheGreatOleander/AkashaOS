@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Nexus - Advanced AI Solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(0, 255, 200, 0.1);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        .particle:nth-child(1) { width: 3px; height: 3px; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 2px; height: 2px; left: 20%; animation-delay: -5s; }
+        .particle:nth-child(3) { width: 4px; height: 4px; left: 30%; animation-delay: -10s; }
+        .particle:nth-child(4) { width: 3px; height: 3px; left: 40%; animation-delay: -15s; }
+        .particle:nth-child(5) { width: 2px; height: 2px; left: 50%; animation-delay: -20s; }
+        .particle:nth-child(6) { width: 3px; height: 3px; left: 60%; animation-delay: -25s; }
+        .particle:nth-child(7) { width: 4px; height: 4px; left: 70%; animation-delay: -30s; }
+        .particle:nth-child(8) { width: 2px; height: 2px; left: 80%; animation-delay: -35s; }
+        .particle:nth-child(9) { width: 3px; height: 3px; left: 90%; animation-delay: -40s; }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            padding: 100px 0 80px;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00ff88, #00d4ff, #8a2be2);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 8s ease-in-out infinite;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .tagline {
+            font-size: 1.4rem;
+            color: #a0a0b0;
+            font-weight: 300;
+            margin-bottom: 40px;
+        }
+
+        .neural-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+            50% { transform: scale(1.1); box-shadow: 0 0 40px rgba(0, 255, 136, 0.6); }
+        }
+
+        .solutions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 100px;
+        }
+
+        .solution-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .solution-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .solution-card:hover::before {
+            left: 100%;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.2);
+            border-color: rgba(0, 255, 136, 0.3);
+        }
+
+        .card-number {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .card-description {
+            color: #a0a0b0;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            color: #000;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #00d4ff, #8a2be2);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+
+        .card-link:hover::before {
+            left: 0;
+        }
+
+        .card-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.3);
+            color: #fff;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 60px 0 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .footer-content {
+            color: #a0a0b0;
+            line-height: 1.8;
+        }
+
+        .footer-author {
+            font-weight: 600;
+            color: #00ff88;
+        }
+
+        .footer-license {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .solutions-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .solution-card {
+                padding: 30px 20px;
+            }
+            
+            .header {
+                padding: 60px 0 50px;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <div class="neural-icon">🧠</div>
+            <h1 class="logo">NEURAL NEXUS</h1>
+            <p class="tagline">Advanced AI Solutions & Coordination Systems</p>
+        </header>
+
+        <main class="solutions-grid">
+            <div class="solution-card">
+                <div class="card-number">01</div>
+                <h2 class="card-title">Model Coordinator Pro</h2>
+                <p class="card-description">
+                    Sophisticated AI model orchestration system designed for seamless coordination and optimization of multiple AI workflows.
+                </p>
+                <a href="01_Model_Coordinator_Pro.html" class="card-link">
+                    Explore System
+                    <span>→</span>
+                </a>
+            </div>
+
+            <div class="solution-card">
+                <div class="card-number">02</div>
+                <h2 class="card-title">Proto-Fusion Nexus</h2>
+                <p class="card-description">
+                    Next-generation fusion technology platform that bridges advanced prototyping with real-world implementation strategies.
+                </p>
+                <a href="02_Proto_Fusion_Nexus.html" class="card-link">
+                    Access Platform
+                    <span>→</span>
+                </a>
+            </div>
+
+            <div class="solution-card">
+                <div class="card-number">03</div>
+                <h2 class="card-title">Real AI Hive-Mind</h2>
+                <p class="card-description">
+                    Distributed intelligence network enabling collaborative AI processing and shared cognitive resources across multiple nodes.
+                </p>
+                <a href="03_Real_AI_Hivemind.html" class="card-link">
+                    Enter Network
+                    <span>→</span>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>© <span class="footer-author">James Earl Stambaugh III</span> — June 30, 2025</p>
+                <p class="footer-license">
+                    Released under the Fusion Fair License v1.0<br>
+                    Commercial use requires a license or fair donation.
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
