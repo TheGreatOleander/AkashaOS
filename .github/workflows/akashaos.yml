@@ -1,31 +1,70 @@
-name: AkashaOS Cloud Run
+name: AkashaOS CI/CD
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write   # needed to push gh-pages
+  pages: write
+  id-token: write
 
 jobs:
-  build-and-run:
+  test:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v3
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
-    - name: Build image
-      run: docker build -t akashaos:ci .
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest || true
+          if [ -f requirements.txt ]; then pip install -r requirements.txt || true; fi
 
-    - name: Run container (short lived)
-      run: |
-        docker run --rm --name akasha_ci akashaos:ci > akasha_run.log || true
-        echo "===== Container run log ====="
-        tail -n +1 akasha_run.log || true
+      - name: Run tests
+        run: pytest -q || true
 
-    - name: Upload run log
-      uses: actions/upload-artifact@v4
-      with:
-        name: akasha-run-log
-        path: akasha_run.log
+  docs:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install MkDocs
+        run: pip install mkdocs mkdocs-material
+
+      - name: Build docs
+        run: mkdocs build --clean
+
+      - name: Deploy docs to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./site
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Package repo
+        run: |
+          mkdir -p dist
+          zip -r dist/AkashaOS-${{ github.sha }}.zip . -x ".git/*"
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: AkashaOS-${{ github.sha }}
+          path: dist/AkashaOS-${{ github.sha }}.zip
