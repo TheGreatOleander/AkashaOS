@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Universal Tablature Generator</title>
+  <style>
+    body {
+      background: #0f0f10;
+      color: #f0f0f0;
+      font-family: 'Courier New', monospace;
+      padding: 2em;
+    }
+    h1 {
+      color: #77ffcc;
+      text-shadow: 0 0 6px #33cc99;
+    }
+    textarea, select, button {
+      width: 100%;
+      padding: 1em;
+      margin: 1em 0;
+      background: #1a1a1a;
+      color: #f0f0f0;
+      border: 1px solid #333;
+      font-size: 1em;
+    }
+    pre {
+      background: #111;
+      padding: 1em;
+      border-left: 4px solid #77ffcc;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎶 Universal Tablature Generator</h1>
+  <p>Paste a simple melody (note letters or MIDI numbers) and select your instrument.</p>
+
+  <textarea id="scoreInput" rows="6" placeholder="Example: C D E F G A B C"></textarea>
+  <label for="instrumentSelect">Instrument:</label>
+  <select id="instrumentSelect">
+    <option value="dulcimer">Mountain Dulcimer (D-A-D)</option>
+    <option value="guitar">6-String Guitar (E-A-D-G-B-E)</option>
+    <option value="ukulele">Ukulele (G-C-E-A)</option>
+  </select>
+
+  <button onclick="convertToTab()">Convert to Tab</button>
+
+  <h2>🎼 Generated Tablature:</h2>
+  <pre id="tabOutput"></pre>
+
+<script>
+const tuningPresets = {
+  dulcimer: ['D', 'A', 'D'],
+  guitar: ['E', 'A', 'D', 'G', 'B', 'E'],
+  ukulele: ['G', 'C', 'E', 'A']
+};
+
+const noteOrder = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+function noteToMidi(note) {
+  let n = note.toUpperCase().trim();
+  let octave = 4;
+  if (n.length > 1 && isNaN(n[1])) {
+    octave = parseInt(n.slice(2)) || 4;
+    n = n[0] + n[1];
+  } else {
+    octave = parseInt(n.slice(1)) || 4;
+    n = n[0];
+  }
+  let index = noteOrder.indexOf(n);
+  return index >= 0 ? (12 * (octave + 1)) + index : null;
+}
+
+function convertToTab() {
+  const input = document.getElementById("scoreInput").value.trim().split(/\s+/);
+  const instrument = document.getElementById("instrumentSelect").value;
+  const tuning = tuningPresets[instrument];
+  let output = "";
+
+  input.forEach((note, idx) => {
+    const pitchIdx = noteOrder.indexOf(note.toUpperCase());
+    if (pitchIdx === -1) {
+      output += `? `;
+    } else {
+      let bestString = 0;
+      let bestFret = 99;
+      tuning.forEach((openNote, stringIdx) => {
+        let openIdx = noteOrder.indexOf(openNote);
+        let fret = (pitchIdx - openIdx + 12) % 12;
+        if (fret < bestFret) {
+          bestFret = fret;
+          bestString = stringIdx;
+        }
+      });
+      output += `[String ${bestString + 1}: Fret ${bestFret}] `;
+    }
+  });
+
+  document.getElementById("tabOutput").textContent = output;
+}
+</script>
+</body>
+</html>

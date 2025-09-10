@@ -1,0 +1,31 @@
+name: AkashaOS Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build image
+      run: docker build -t akashaos:ci .
+
+    - name: Run container (short lived)
+      run: |
+        docker run --rm --name akasha_ci akashaos:ci > akasha_run.log || true
+        echo "===== Container run log ====="
+        tail -n +1 akasha_run.log || true
+
+    - name: Upload run log
+      uses: actions/upload-artifact@v4
+      with:
+        name: akasha-run-log
+        path: akasha_run.log

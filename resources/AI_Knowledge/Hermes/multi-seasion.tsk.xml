@@ -1,0 +1,36 @@
+<Task sr="task2" ve="2">
+    <cname>Multi-Session Memory</cname>
+    <Action sr="act0" ve="7">
+        <code>130</code>
+        <label>Retrieve Previous Session</label>
+        <Str sr="arg0" ve="3">
+        // Retrieve conversation from previous session
+        var previousSession = getPreviousSession(); // Load from a file or database
+        return previousSession;
+        </Str>
+        <Str sr="arg1" ve="3">%previous_session</Str>
+        <Int sr="arg2" val="1"/>
+        <Int sr="arg3" val="45"/>
+        <Int sr="arg4" val="0"/>
+        <Int sr="arg5" val="3"/>
+    </Action>
+    
+    <Action sr="act1" ve="7">
+        <code>116</code>
+        <label>Save Current Session</label>
+        <Str sr="arg0" ve="3">%file_path</Str>
+        <Str sr="arg1" ve="3">%current_session</Str>
+        <Int sr="arg2" val="0"/>
+        <Int sr="arg3" val="0"/>
+        <Int sr="arg4" val="0"/>
+        <Int sr="arg5" val="3"/>
+    </Action>
+</Task>
+
+<script>
+// Placeholder function to simulate getting the previous session
+function getPreviousSession() {
+    // Ideally, you would read from a storage file or database
+    return "Previous session data";
+}
+</script>

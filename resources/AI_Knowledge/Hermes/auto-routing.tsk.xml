@@ -1,0 +1,35 @@
+<Task sr="task2" ve="2">
+    <cname>Auto-Routing</cname>
+    <Action sr="act0" ve="7">
+        <code>130</code>
+        <label>Auto-Route Task</label>
+        <Str sr="arg0" ve="3">
+        // Simple auto-routing logic
+        var taskType = "%task_type"; // This would be dynamically set based on task
+        var aiModel = getBestAIModelForTask(taskType); // Routing to the best model
+        
+        return aiModel;
+        </Str>
+        <Str sr="arg1" ve="3">%selected_ai</Str>
+        <Int sr="arg2" val="1"/>
+        <Int sr="arg3" val="45"/>
+        <Int sr="arg4" val="0"/>
+        <Int sr="arg5" val="3"/>
+    </Action>
+</Task>
+
+<script>
+// Simple routing logic based on task type
+function getBestAIModelForTask(taskType) {
+    switch (taskType) {
+        case "text_compression":
+            return "GPT-4"; // Best for handling semantic-heavy tasks
+        case "technical_analysis":
+            return "Claude"; // Good for structured analysis
+        case "quick_responses":
+            return "GPT-3"; // Good for general Q&A
+        default:
+            return "GPT-4"; // Default fallback
+    }
+}
+</script>

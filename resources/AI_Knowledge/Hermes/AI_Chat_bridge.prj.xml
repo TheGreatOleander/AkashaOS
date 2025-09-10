@@ -1,0 +1,643 @@
+<Element sr="elements2" ve="4">
+                <code>10</code>
+                <descript>Compress</descript>
+                <geom>72,300,300,60</geom>
+                <TaskAction sr="task">
+                    <code>task3</code>
+                </TaskAction>
+                <Str sr="arg0" ve="3">Advanced Compress</Str>
+                <Int sr="arg1" val="16"/>
+                <Int sr="arg2" val="0"/>
+            </Element>
+            
+            <Element sr="elements3" ve="4">
+                <code>10</code>
+                <descript>Decode Data</descript>
+                <geom>72,400,300,60</geom>
+                <TaskAction sr="task">
+                    <code>task4</code>
+                </TaskAction>
+                <Str sr="arg0" ve="3">Decode & Analyze</Str>
+                <Int sr="arg1" val="16"/>
+                <Int sr="arg2" val="0"/>
+            </Element>
+            
+            <Element sr="elements4" ve="4">
+                <code>10</code>
+                <descript>Protocol Status</descript>
+                <geom>72,500,300,60</geom>
+                <TaskAction sr="task">
+                    <code>task5</code>
+                </TaskAction>
+                <Str sr="arg0" ve="3">Bridge Status</Str>
+                <Int sr="arg1" val="16"/>
+                <Int sr="arg2" val="0"/>
+            </Element>
+            
+        <!-- Task: Protocol Status and Management -->
+        <Task sr="task5" ve="2">
+            <cname>Bridge Status</cname>
+            <Action sr="act0" ve="7">
+                <code>401</code>
+                <label>Check Bridge File</label>
+                <Str sr="arg0" ve="3">/storage/emulated/0/Download/ai_chat_bridge.txt</Str>
+                <Str sr="arg1" ve="3">%bridge_content</Str>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act1" ve="7">
+                <code>130</code>
+                <label>Generate Status Report</label>
+                <Str sr="arg0" ve="3">
+                var content = "%bridge_content";
+                var lines = content.split('\n');
+                var entries = lines.filter(line => line.startsWith('[')).length;
+                var totalChars = content.length;
+                var lastEntry = lines.find(line => line.startsWith('[')) || "None";
+                
+                var compressionRatio = 0.65; // Estimated average
+                var maxTokens = 4000; // Conservative estimate
+                var estimatedTokens = Math.ceil(totalChars * 0.25);
+                
+                var status = {
+                    bridgeActive: true,
+                    totalEntries: entries,
+                    totalSize: totalChars + " characters",
+                    lastCapture: lastEntry.substring(1, 20) + "...",
+                    compressionRatio: compressionRatio,
+                    estimatedTokens: estimatedTokens,
+                    capacityUsed: ((estimatedTokens / maxTokens) * 100).toFixed(1) + "%",
+                    protocol: "AI-BRIDGE-V1",
+                    recommendations: estimatedTokens > 3000 ? "Consider archiving old entries" : "Operating normally"
+                };
+                
+                return JSON.stringify(status, null, 2);
+                </Str>
+                <Str sr="arg1" ve="3">%status_report</Str>
+                <Int sr="arg2" val="1"/>
+                <Int sr="arg3" val="45"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act2" ve="7">
+                <code>548</code>
+                <label>Display Status</label>
+                <Str sr="arg0" ve="3">AI Bridge Status:
+%status_report</Str>
+                <Int sr="arg1" val="1"/>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+        </Task><?xml version="1.0" encoding="UTF-8"?>
+<TaskerData sr="" dvi="1" tv="6.3.18">
+    <Project sr="proj0" ve="2">
+        <cname>AI Chat Bridge</cname>
+        <created>1720094400000</created>
+        <Bundle sr="uiBundle">
+            <Vals sr="val">
+                <net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+                    <StringArray sr="">
+                        <_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0>%captured_text</_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES0>
+                        <_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1>%file_path</_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES1>
+                        <_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2>%prompt_text</_array_net.dinglisch.android.tasker.RELEVANT_VARIABLES2>
+                    </StringArray>
+                </net.dinglisch.android.tasker.RELEVANT_VARIABLES>
+            </Vals>
+        </Bundle>
+        
+        <!-- Profile: Text Selection in Chat Apps -->
+        <Profile sr="prof1" ve="2">
+            <cname>Chat Text Capture</cname>
+            <kid>task1</kid>
+            <Event sr="con0" ve="2">
+                <code>6</code>
+                <Str sr="arg0" ve="3">android.intent.action.PROCESS_TEXT</Str>
+                <Str sr="arg1" ve="3">*</Str>
+                <Str sr="arg2" ve="3">*</Str>
+                <Int sr="arg3" val="0"/>
+            </Event>
+            <Application sr="con1" ve="2">
+                <code>4</code>
+                <Str sr="arg0" ve="3">com.android.chrome,com.openai.chatgpt,com.anthropic.claude</Str>
+                <Int sr="arg1" val="0"/>
+            </Application>
+        </Profile>
+        
+        <!-- Profile: Quick Tile Trigger -->
+        <Profile sr="prof2" ve="2">
+            <cname>Quick Capture Toggle</cname>
+            <kid>task2</kid>
+            <Event sr="con0" ve="2">
+                <code>2021</code>
+                <Str sr="arg0" ve="3">ai_bridge_tile</Str>
+                <Int sr="arg1" val="0"/>
+            </Event>
+        </Profile>
+        
+        <!-- Task: Capture and Save Text -->
+        <Task sr="task1" ve="2">
+            <cname>Capture Chat Text</cname>
+            <Action sr="act0" ve="7">
+                <code>590</code>
+                <label>Get Selected Text</label>
+                <Str sr="arg0" ve="3">%captured_text</Str>
+                <Str sr="arg1" ve="3">%CLIP</Str>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act1" ve="7">
+                <code>116</code>
+                <label>Set File Path</label>
+                <Str sr="arg0" ve="3">%file_path</Str>
+                <Str sr="arg1" ve="3">/storage/emulated/0/Download/ai_chat_bridge.txt</Str>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act2" ve="7">
+                <code>116</code>
+                <label>Add Timestamp</label>
+                <Str sr="arg0" ve="3">%timestamp</Str>
+                <Str sr="arg1" ve="3">%DATE %TIME</Str>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act3" ve="7">
+                <code>116</code>
+                <label>Format Entry</label>
+                <Str sr="arg0" ve="3">%formatted_entry</Str>
+                <Str sr="arg1" ve="3">[%timestamp]
+%captured_text
+---
+</Str>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act4" ve="7">
+                <code>406</code>
+                <label>Append to File</label>
+                <Str sr="arg0" ve="3">%file_path</Str>
+                <Str sr="arg1" ve="3">%formatted_entry</Str>
+                <Int sr="arg2" val="1"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act5" ve="7">
+                <code>548</code>
+                <label>Success Toast</label>
+                <Str sr="arg0" ve="3">Text captured and saved!</Str>
+                <Int sr="arg1" val="0"/>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+        </Task>
+        
+        <!-- Task: Read and Process File -->
+        <Task sr="task2" ve="2">
+            <cname>Read and Process File</cname>
+            <Action sr="act0" ve="7">
+                <code>116</code>
+                <label>Set File Path</label>
+                <Str sr="arg0" ve="3">%file_path</Str>
+                <Str sr="arg1" ve="3">/storage/emulated/0/Download/ai_chat_bridge.txt</Str>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act1" ve="7">
+                <code>401</code>
+                <label>Read File</label>
+                <Str sr="arg0" ve="3">%file_path</Str>
+                <Str sr="arg1" ve="3">%file_content</Str>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act2" ve="7">
+                <code>116</code>
+                <label>Compress Text (Base64)</label>
+                <Str sr="arg0" ve="3">%compressed_text</Str>
+                <Str sr="arg1" ve="3">%base64encode(%file_content)</Str>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act3" ve="7">
+                <code>116</code>
+                <label>Create Prompt</label>
+                <Str sr="arg0" ve="3">%prompt_text</Str>
+                <Str sr="arg1" ve="3">Here's chat data (Base64 encoded):
+%compressed_text
+
+Please decode and analyze this conversation thread. What patterns do you see? What would be the most useful next step or information to gather?</Str>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act4" ve="7">
+                <code>300</code>
+                <label>Copy to Clipboard</label>
+                <Str sr="arg0" ve="3">%prompt_text</Str>
+                <Int sr="arg1" val="0"/>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act5" ve="7">
+                <code>548</code>
+                <label>Ready Toast</label>
+                <Str sr="arg0" ve="3">Prompt ready! Paste in AI chat.</Str>
+                <Int sr="arg1" val="0"/>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act6" ve="7">
+                <code>550</code>
+                <label>Show Options</label>
+                <Str sr="arg0" ve="3">File Operations</Str>
+                <Str sr="arg1" ve="3">View File,Clear File,Share File,Compress More</Str>
+                <Str sr="arg2" ve="3">%choice</Str>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act7" ve="7">
+                <code>422</code>
+                <label>Handle Choice</label>
+                <If sr="if">
+                    <lhs>%choice</lhs>
+                    <op>2</op>
+                    <rhs>View File</rhs>
+                </If>
+                <Action sr="act0" ve="7">
+                    <code>548</code>
+                    <Str sr="arg0" ve="3">%file_content</Str>
+                    <Int sr="arg1" val="1"/>
+                    <Int sr="arg2" val="0"/>
+                    <Int sr="arg3" val="0"/>
+                    <Int sr="arg4" val="0"/>
+                    <Int sr="arg5" val="3"/>
+                </Action>
+            </Action>
+            
+            <Action sr="act8" ve="7">
+                <code>422</code>
+                <label>Clear File</label>
+                <If sr="if">
+                    <lhs>%choice</lhs>
+                    <op>2</op>
+                    <rhs>Clear File</rhs>
+                </If>
+                <Action sr="act0" ve="7">
+                    <code>406</code>
+                    <Str sr="arg0" ve="3">%file_path</Str>
+                    <Str sr="arg1" ve="3">Chat Bridge Log - Cleared %DATE %TIME
+---
+</Str>
+                    <Int sr="arg2" val="0"/>
+                    <Int sr="arg3" val="0"/>
+                    <Int sr="arg4" val="0"/>
+                    <Int sr="arg5" val="3"/>
+                </Action>
+            </Action>
+        </Task>
+        
+        <!-- Task: Advanced Multi-Algorithm Compression -->
+        <Task sr="task3" ve="2">
+            <cname>Advanced Compression</cname>
+            <Action sr="act0" ve="7">
+                <code>130</code>
+                <label>Multi-Layer Compression</label>
+                <Str sr="arg0" ve="3">
+                // Multi-algorithm compression for AI bridge
+                var text = "%file_content";
+                var metadata = {
+                    timestamp: "%DATE %TIME",
+                    length: text.length,
+                    compression: "multilayer",
+                    protocol: "ai-bridge-v1"
+                };
+                
+                // Layer 1: Semantic compression (AI-specific patterns)
+                var aiPatterns = [
+                    // Common AI interaction patterns
+                    ['I understand', '◊1◊'],
+                    ['Can you help', '◊2◊'],
+                    ['Let me think', '◊3◊'],
+                    ['Here\'s what', '◊4◊'],
+                    ['Based on', '◊5◊'],
+                    ['However', '◊6◊'],
+                    ['Additionally', '◊7◊'],
+                    ['Therefore', '◊8◊'],
+                    ['In summary', '◊9◊'],
+                    ['For example', '◊A◊'],
+                    ['It appears', '◊B◊'],
+                    ['would be', '◊C◊'],
+                    ['could be', '◊D◊'],
+                    ['should be', '◊E◊'],
+                    ['might be', '◊F◊']
+                ];
+                
+                // Layer 2: Linguistic compression
+                var lingPatterns = [
+                    [' the ', '§1§'], [' and ', '§2§'], [' that ', '§3§'],
+                    [' with ', '§4§'], [' this ', '§5§'], [' you ', '§6§'],
+                    [' for ', '§7§'], [' are ', '§8§'], [' not ', '§9§'],
+                    [' can ', '§A§'], [' will ', '§B§'], [' have ', '§C§'],
+                    [' from ', '§D§'], [' they ', '§E§'], [' been ', '§F§'],
+                    [' what ', '§G§'], [' when ', '§H§'], [' where ', '§I§'],
+                    [' which ', '§J§'], [' would ', '§K§'], [' there ', '§L§'],
+                    [' could ', '§M§'], [' should ', '§N§'], [' about ', '§O§']
+                ];
+                
+                // Apply compression layers
+                var compressed = text;
+                
+                // Apply AI patterns first (higher-level semantic compression)
+                aiPatterns.forEach(function(pattern) {
+                    compressed = compressed.replace(new RegExp(pattern[0], 'gi'), pattern[1]);
+                });
+                
+                // Apply linguistic patterns
+                lingPatterns.forEach(function(pattern) {
+                    compressed = compressed.replace(new RegExp(pattern[0], 'gi'), pattern[1]);
+                });
+                
+                // Layer 3: Character frequency analysis
+                var freq = {};
+                for (var i = 0; i < compressed.length; i++) {
+                    var char = compressed[i];
+                    freq[char] = (freq[char] || 0) + 1;
+                }
+                
+                // Create dynamic substitution for most frequent remaining patterns
+                var commonChars = Object.keys(freq).sort((a,b) => freq[b] - freq[a]);
+                var dynamicMap = {};
+                var symbols = ['∆', '∇', '∑', '∏', '∂', '∫', '√', '∞', '≈', '≡', '≠', '≤', '≥', '±', '∓', '×', '÷', '∅', '∈', '∉'];
+                
+                for (var i = 0; i < Math.min(commonChars.length, symbols.length); i++) {
+                    if (freq[commonChars[i]] > 5) { // Only substitute frequently used chars
+                        var char = commonChars[i];
+                        var symbol = symbols[i];
+                        dynamicMap[char] = symbol;
+                        compressed = compressed.replace(new RegExp('\\' + char, 'g'), symbol);
+                    }
+                }
+                
+                // Create protocol header
+                var header = JSON.stringify({
+                    meta: metadata,
+                    aiMap: aiPatterns,
+                    lingMap: lingPatterns,
+                    dynMap: dynamicMap,
+                    ratio: (compressed.length / text.length).toFixed(3)
+                });
+                
+                // Final encoding
+                var payload = btoa(compressed);
+                var headerB64 = btoa(header);
+                
+                return "AI-BRIDGE-V1:" + headerB64 + ":" + payload;
+                </Str>
+                <Str sr="arg1" ve="3">%compressed_result</Str>
+                <Int sr="arg2" val="1"/>
+                <Int sr="arg3" val="45"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act1" ve="7">
+                <code>300</code>
+                <label>Copy Compressed</label>
+                <Str sr="arg0" ve="3">%compressed_result</Str>
+                <Int sr="arg1" val="0"/>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act2" ve="7">
+                <code>548</code>
+                <label>Compression Stats</label>
+                <Str sr="arg0" ve="3">Advanced compression applied. Ready for AI bridge transfer.</Str>
+                <Int sr="arg1" val="1"/>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+        </Task>
+        
+        <!-- Task: Decoder/Analyzer for Received Data -->
+        <Task sr="task4" ve="2">
+            <cname>Decode and Analyze</cname>
+            <Action sr="act0" ve="7">
+                <code>590</code>
+                <label>Get Clipboard Data</label>
+                <Str sr="arg0" ve="3">%incoming_data</Str>
+                <Str sr="arg1" ve="3">%CLIP</Str>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act1" ve="7">
+                <code>130</code>
+                <label>Decode AI Bridge Data</label>
+                <Str sr="arg0" ve="3">
+                // AI Bridge Protocol Decoder
+                var data = "%incoming_data";
+                
+                if (data.startsWith("AI-BRIDGE-V1:")) {
+                    var parts = data.substring(13).split(":");
+                    var headerB64 = parts[0];
+                    var payloadB64 = parts[1];
+                    
+                    // Decode header and payload
+                    var header = JSON.parse(atob(headerB64));
+                    var compressed = atob(payloadB64);
+                    
+                    // Reverse the compression layers
+                    var decompressed = compressed;
+                    
+                    // Reverse dynamic character mapping
+                    if (header.dynMap) {
+                        Object.keys(header.dynMap).forEach(function(original) {
+                            var symbol = header.dynMap[original];
+                            decompressed = decompressed.replace(new RegExp('\\' + symbol, 'g'), original);
+                        });
+                    }
+                    
+                    // Reverse linguistic patterns
+                    if (header.lingMap) {
+                        header.lingMap.forEach(function(pattern) {
+                            decompressed = decompressed.replace(new RegExp(pattern[1], 'g'), pattern[0]);
+                        });
+                    }
+                    
+                    // Reverse AI patterns
+                    if (header.aiMap) {
+                        header.aiMap.forEach(function(pattern) {
+                            decompressed = decompressed.replace(new RegExp(pattern[1], 'g'), pattern[0]);
+                        });
+                    }
+                    
+                    var analysis = {
+                        protocol: header.meta.protocol,
+                        originalLength: header.meta.length,
+                        compressedLength: compressed.length,
+                        ratio: header.meta.ratio,
+                        timestamp: header.meta.timestamp,
+                        wordCount: decompressed.split(/\s+/).length,
+                        summary: "Decoded AI bridge communication"
+                    };
+                    
+                    return JSON.stringify({
+                        status: "decoded",
+                        analysis: analysis,
+                        content: decompressed
+                    }, null, 2);
+                } else {
+                    return "Not AI-BRIDGE protocol data";
+                }
+                </Str>
+                <Str sr="arg1" ve="3">%decoded_result</Str>
+                <Int sr="arg2" val="1"/>
+                <Int sr="arg3" val="45"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act2" ve="7">
+                <code>116</code>
+                <label>Create Analysis Prompt</label>
+                <Str sr="arg0" ve="3">%analysis_prompt</Str>
+                <Str sr="arg1" ve="3">DECODED AI BRIDGE DATA:
+%decoded_result
+
+This is compressed chat data from the other AI system. Please:
+1. Analyze the conversation patterns
+2. Identify key insights or questions
+3. Suggest next steps or responses
+4. Note any capabilities mentioned that complement your own
+
+Focus on collaborative problem-solving opportunities.</Str>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+            
+            <Action sr="act3" ve="7">
+                <code>300</code>
+                <label>Copy Analysis Prompt</label>
+                <Str sr="arg0" ve="3">%analysis_prompt</Str>
+                <Int sr="arg1" val="0"/>
+                <Int sr="arg2" val="0"/>
+                <Int sr="arg3" val="0"/>
+                <Int sr="arg4" val="0"/>
+                <Int sr="arg5" val="3"/>
+            </Action>
+        </Task>
+        
+        <!-- Scene: Quick Access Widget -->
+        <Scene sr="scene0" ve="2">
+            <cname>AI Bridge Control</cname>
+            <nme>ai_bridge_scene</nme>
+            <Properties sr="prop">
+                <Int sr="ActionBarColour" val="-16777216"/>
+                <Int sr="ActionBarTextColour" val="-1"/>
+                <Str sr="ActionBarTitle" ve="3">AI Chat Bridge</Str>
+                <Int sr="BackgroundColour" val="-14342875"/>
+                <Int sr="StatusBarColour" val="-16777216"/>
+                <Int sr="TextColour" val="-1"/>
+                <Int sr="TextSize" val="16"/>
+            </Properties>
+            
+            <Element sr="elements0" ve="4">
+                <code>10</code>
+                <descript>Capture Text</descript>
+                <geom>72,100,300,60</geom>
+                <TaskAction sr="task">
+                    <code>task1</code>
+                </TaskAction>
+                <Str sr="arg0" ve="3">Capture Text</Str>
+                <Int sr="arg1" val="16"/>
+                <Int sr="arg2" val="0"/>
+            </Element>
+            
+            <Element sr="elements1" ve="4">
+                <code>10</code>
+                <descript>Process File</descript>
+                <geom>72,200,300,60</geom>
+                <TaskAction sr="task">
+                    <code>task2</code>
+                </TaskAction>
+                <Str sr="arg0" ve="3">Process File</Str>
+                <Int sr="arg1" val="16"/>
+                <Int sr="arg2" val="0"/>
+            </Element>
+            
+            <Element sr="elements3" ve="4">
+                <code>10</code>
+                <descript>Decode Data</descript>
+                <geom>72,400,300,60</geom>
+                <TaskAction sr="task">
+                    <code>task4</code>
+                </TaskAction>
+                <Str sr="arg0" ve="3">Decode & Analyze</Str>
+                <Int sr="arg1" val="16"/>
+                <Int sr="arg2" val="0"/>
+            </Element>
+            
+            <Element sr="elements4" ve="4">
+                <code>10</code>
+                <descript>Protocol Status</descript>
+                <geom>72,500,300,60</geom>
+                <TaskAction sr="task">
+                    <code>task5</code>
+                </TaskAction>
+                <Str sr="arg0" ve="3">Bridge Status</Str>
+                <Int sr="arg1" val="16"/>
+                <Int sr="arg2" val="0"/>
+            </Element>
+        </Scene>
+    </Project>
+</TaskerData>
