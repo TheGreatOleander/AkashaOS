@@ -1,1 +1,0 @@
-# Audio to MIDI stub

@@ -1,3 +1,0 @@
-# Install Guide
-
-Step 1: Install Python...

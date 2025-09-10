@@ -1,7 +1,0 @@
-<agent>
-  <id>coder_ai</id>
-  <role>Responsible for generating, debugging, and maintaining code</role>
-  <can_receive_from>planner_ai, humans</can_receive_from>
-  <can_send_to>humans, planner_ai</can_send_to>
-  <persist_state>true</persist_state>
-</agent>
