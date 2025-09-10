@@ -1,12 +1,29 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*$py.class
+
+# Virtual environment
 .venv/
+env/
 venv/
-.env
-# Node
-node_modules/
+
+# Distribution / packaging
+build/
 dist/
-# Editor
-.vscode/
-.idea/
+*.egg-info/
+
+# Logs and databases
+*.log
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Secrets
+*.gpg
+*.key
+*.pem
+.env
+secrets.*
