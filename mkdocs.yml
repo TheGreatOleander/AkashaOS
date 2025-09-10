@@ -14,7 +14,7 @@ theme:
 nav:
   - Home: index.md
   - Architecture: architecture.md
-  - Security: ../docs/SECURITY.md
-  - Contributing: ../CONTRIBUTING.md
-  - Code of Conduct: ../CODE_OF_CONDUCT.md
-  - Changelog: ../CHANGELOG.md
+  - Security: SECURITY.md
+  - Contributing: CONTRIBUTING.md
+  - Code of Conduct: CODE_OF_CONDUCT.md
+  - Changelog: CHANGELOG.md
