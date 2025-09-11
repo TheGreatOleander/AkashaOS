@@ -13,7 +13,7 @@ ACTIVE_DIR = Path("ideas/active")
 ISSUE_FILE = next(ACTIVE_DIR.glob("*.json"), None)
 SPEC_PATH = ACTIVE_DIR / "spec.md"
 GITHUB_USER = os.getenv("GITHUB_USER")
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_TOKEN: <REDACTED>"GITHUB_TOKEN")
 
 if not ISSUE_FILE or not SPEC_PATH.exists():
     print("❌ Missing active issue JSON or spec.md")
