@@ -33,10 +33,9 @@ class SwarmOrchestrator:
         self.work_directory.mkdir(exist_ok=True)
         
         # GitHub API setup
-        self.github_token = os.getenv("GITHUB_TOKEN")
+        self.github_token: <REDACTED>"GITHUB_TOKEN")
         self.github_headers = {}
-        if self.github_token:
-            self.headers["Authorization"] = f"token {self.github_token}"
+        if self.github_token: <REDACTED>"Authorization"] = f"token {self.github_token}"
         
         # Rate limiting
         self.last_github_request = 0
