@@ -12,15 +12,14 @@ from typing import List, Dict, Optional
 import os
 
 class GitHubScanner:
-    def __init__(self, token=None):
+    def __init__(self, token: <REDACTED> = None):
         self.token = token or os.getenv('GITHUB_TOKEN')
         self.base_url = "https://api.github.com"
         self.headers = {
             'Accept': 'application/vnd.github.v3+json',
             'User-Agent': 'One-at-a-Time-Machine/1.0'
         }
-        if self.token:
-            self.headers['Authorization'] = f'token {self.token}'
+        if self.token: <REDACTED>'Authorization'] = f'token {self.token}'
         
         self.rate_limit_remaining = 60  # GitHub's unauthenticated limit
         self.rate_limit_reset = time.time() + 3600
