@@ -1,0 +1,41 @@
+FUSION FAIR LICENSE (v1.0)
+For: Model Coordinator Pro, Proto-Fusion Nexus, Real AI Hive-Mind
+
+Author: “The Originator”
+Collaborators: AI systems (ChatGPT, Claude, Grok), human coder
+Projects: Proto-Fusion Nexus, AI Model Coordinator Pro, Real AI Hive-Mind
+
+This software is provided to you freely to explore, learn from, and build upon — with a few simple conditions:
+
+1. Non-Commercial Use Is Free
+You may:
+- Use the software for personal, educational, or artistic purposes.
+- Modify it, remix it, or showcase it, as long as you don’t sell it or package it for profit.
+
+2. Commercial Use Requires a License
+If you:
+- Use this software in a business or institution,
+- Integrate it into a product or service,
+- Charge others to access or interact with it,
+
+You must obtain a license, or make a fair donation.
+
+License donations can be sent to:
+MetaMask Wallet
+0x0755F4A43C7A567E6554AEedC91F9Fe37737D35F
+
+Fair use. Fair compensation. No corporate freeloading.
+
+3. Donations Welcome
+If this project helped you and you're able to support its creator, donations of any kind are deeply appreciated.
+
+4. Respect and Attribution
+Keep this line visible in any public version or fork:
+“Based on the Fusion Project by The Originator and collaborators, built in collaboration with AI.”
+
+5. No Warranty
+This is experimental software built under extraordinary conditions.
+Use at your own risk. No liability, no guarantee.
+
+© 2024 The Originator and collaborators. All rights reserved.
+Licensing and inquiries: Please reference the public MetaMask wallet above.

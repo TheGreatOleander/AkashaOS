@@ -1,0 +1,20 @@
+site_name: AkashaOS
+site_description: "An operating system not for machines, but for ideas."
+site_url: https://thegreatoleander.github.io/AkashaOS/
+repo_url: https://github.com/TheGreatOleander/AkashaOS
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.sections
+    - toc.integrate
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Security: SECURITY.md
+  - Contributing: CONTRIBUTING.md
+  - Code of Conduct: CODE_OF_CONDUCT.md
+  - Changelog: CHANGELOG.md

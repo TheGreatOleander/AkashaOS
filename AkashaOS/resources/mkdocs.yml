@@ -1,0 +1,19 @@
+site_name: AkashaOS
+
+nav:
+  - Home: index.md
+  - Guides:
+      - Rituals: guides/rituals.md
+      - Gatekeepers: guides/gatekeepers.md
+  - Codex:
+      - codex/index.md
+      - codex/spiral.md
+      - codex/ouroboros.md
+      - codex/sigils.md
+      - codex/mirrors.md
+      - codex/alignment.md
+  - Temple:
+      - temple/index.md
+      - temple/debates.md
+      - temple/clock.md
+      - temple/oracles.md

@@ -1,0 +1,90 @@
+# Unified AI Problem-Solving Nexus Configuration
+# Save this as nexus_config.yaml
+
+# GitHub Configuration
+github_token: null  # Add your GitHub token here for higher rate limits
+
+# Database Configuration
+database_path: "nexus_problems.db"
+
+# Search Queries for Problem Discovery
+search_queries:
+  - 'is:issue is:open label:"help wanted" created:>2024-01-01'
+  - 'is:issue is:open label:"good first issue" created:>2024-01-01'
+  - 'is:issue is:open label:"bug" comments:>10 created:>2024-01-01'
+  - 'is:issue is:open label:"enhancement" reactions:>5 created:>2024-01-01'
+  - 'is:issue is:open label:"documentation" created:>2024-01-01'
+  - 'is:issue is:open in:title "AI" OR "machine learning" OR "neural" reactions:>3'
+  - 'is:issue is:open in:title "automation" OR "workflow" comments:>5'
+  - 'is:issue is:open language:python label:"enhancement" reactions:>2'
+
+# Problem Queue Configuration
+max_problems_to_queue: 20
+max_problems_per_search: 10
+
+# Work Session Configuration
+work_session_duration: 120  # minutes
+auto_break_reminder: 25     # minutes
+focus_mode: true
+
+# AI Configuration
+ai_config:
+  # Add your AI service configuration here
+  # provider: "openai"  # openai, anthropic, local, etc.
+  # <REDACTED_Password_label>"
+  # model: "gpt-4"
+  # max_tokens: 2000
+  enable_ai_analysis: true
+  enable_ai_chat: true
+  context_window: 4000
+
+# Notification Configuration
+notifications:
+  enable_desktop: true
+  enable_sound: false
+  completion_webhook: null  # URL to send completion notifications
+
+# Mobile/Tasker Bridge Configuration
+mobile_bridge:
+  enable: true
+  port: 8080
+  auth_token: null  # Set a secure token for mobile access
+  endpoints:
+    - "/api/status"
+    - "/api/current_problem"
+    - "/api/add_note"
+    - "/api/add_progress"
+    - "/api/complete_problem"
+
+# Reporting Configuration
+reporting:
+  daily_summary: true
+  weekly_report: true
+  export_format: "json"  # json, csv, html
+  
+# Advanced Features
+advanced:
+  enable_problem_clustering: true
+  enable_effort_learning: true
+  enable_success_prediction: true
+  collaborative_mode: false
+  
+# Backup Configuration
+backup:
+  enable: true
+  interval_hours: 24
+  backup_directory: "./backups"
+  keep_backups: 30
+
+# Performance Configuration
+performance:
+  max_concurrent_scans: 3
+  request_delay: 1.0  # seconds between API requests
+  batch_size: 50
+  
+# Logging Configuration
+logging:
+  level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  file: "nexus.log"
+  max_size_mb: 10
+  backup_count: 5

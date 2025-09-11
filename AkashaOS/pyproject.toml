@@ -1,0 +1,10 @@
+[project]
+name = "project"
+version = "0.0.1"
+description = "Consolidated package created from uploaded archive."
+authors = [{name="Automated Reorganizer"}]
+readme = "README.md"
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
