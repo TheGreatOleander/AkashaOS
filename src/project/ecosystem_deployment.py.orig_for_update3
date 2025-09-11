@@ -155,7 +155,7 @@ class EcosystemDeployment:
         class MockAetheriusEngine:
             def __init__(self, config):
                 self.config = config
-                self.github_token = config.get("github_token")
+                self.github_token: <REDACTED>"github_token")
                 self.rate_limits = config.get("rate_limits", {"github": 60, "llm": 20})
             
             def scan_and_rank_issues(self):
