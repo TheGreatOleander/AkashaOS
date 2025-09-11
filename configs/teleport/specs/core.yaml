@@ -1,0 +1,36 @@
+component: akashaos-core
+version: 0.1
+purpose: >
+  Core orchestration layer that manages modules (veil, temple, mirror, etc.),
+  schedules tasks, and maintains the reflective loop that drives AkashaOS.
+interfaces:
+  cli:
+    - akasha run <module>
+    - akasha list-modules
+  api:
+    - load_module(name: str) -> bool
+    - run_cycle() -> dict
+state_model:
+  modules: list
+  scheduler:
+    type: loop
+    tick: milliseconds
+constraints:
+  language: python>=3.10
+  dependencies: ["rich", "click", "asyncio"]
+tests:
+  - name: run_loop_once
+    run: python -m akashaos.core --tick=1
+    expect: "stdout contains 'cycle complete'"
+  - name: list_modules
+    run: akasha list-modules
+    expect: "exit_code==0 and stdout contains module names"
+non_functional:
+  concurrency: async
+  uptime: >99%
+security:
+  - "modules must not execute arbitrary shell by default"
+  - "sandbox untrusted code where possible"
+build:
+  dockerized: true
+  base_image: python:3.10

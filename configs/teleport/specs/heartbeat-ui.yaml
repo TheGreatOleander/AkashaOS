@@ -1,0 +1,52 @@
+component: akashaos-heartbeat-ui
+version: 0.1
+purpose: >
+  Provide a real-time “heartbeat” display of AkashaOS modules and services,
+  reporting status, metrics, and events via HTTP and WebSocket.
+interfaces:
+  http:
+    - GET /status
+      description: Return JSON with current service statuses and metadata.
+      response_example:
+        services:
+          - name: "veil"
+            status: "ok"
+            last_seen: "2025-09-11T16:12:00Z"
+  websocket:
+    - path: /ws/heartbeat
+      description: Push events on status changes.
+      message_example:
+        service: "temple"
+        status: "warn"
+        ts: "2025-09-11T16:12:30Z"
+state_model:
+  service:
+    id: string
+    status: enum(ok,warn,down)
+    last_seen: iso8601-timestamp
+    meta: dict
+constraints:
+  language: python>=3.10
+  frameworks: [ "flask>=2.0 OR fastapi>=0.100", "uvicorn>=0.22" ]
+  env:
+    PORT: 8080
+tests:
+  - name: status_endpoint
+    run: curl -s http://localhost:8080/status
+    expect: "http_code==200 and json.services is list"
+  - name: websocket_push
+    run: ws-test connect ws://localhost:8080/ws/heartbeat --timeout 5s
+    expect: ">=1 message containing {status}"
+non_functional:
+  perf:
+    p95_latency_ms: 200
+    max_memory_mb: 512
+security:
+  - "no secrets hardcoded"
+  - "must reject requests with malformed JSON"
+build:
+  dockerized: true
+  base_image: python:3.10-slim
+  steps:
+    - pip install -r requirements.txt
+    - pytest -q

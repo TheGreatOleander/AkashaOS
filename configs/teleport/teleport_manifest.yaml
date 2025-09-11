@@ -1,0 +1,34 @@
+dependencies:
+- Python >=3.10
+- Flask/FastAPI
+- Rich, Click
+- Docker (optional)
+entrypoints:
+- cli: akasha
+- python: akashaos.core
+- docker: Dockerfile
+files:
+- dest: configs/teleport/README_UPDATE.md
+  src: update/README_UPDATE.md
+language: python
+modules:
+- core/
+- modules/veil/
+- modules/temple/
+- modules/mirror/
+- resources/
+- examples/
+- site_docs/
+owner: TheGreatOleander
+packaging:
+- pyproject.toml
+- requirements.txt
+- Dockerfile
+repo: AkashaOS
+teleportable:
+  high: core orchestration, heartbeat UI, most Python modules
+  low: anything compiled/native
+  medium: modules relying on external services
+tests:
+- pytest in ./tests
+- example runs in ./examples
