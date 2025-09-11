@@ -1,0 +1,11 @@
+{
+  "name": "Pulse",
+  "category": "vital",
+  "description": "Tracks CPU/memory as the system heartbeat.",
+  "tags": [
+    "vitals",
+    "monitor",
+    "core"
+  ],
+  "entry": "modules/pulse/main.sh"
+}
