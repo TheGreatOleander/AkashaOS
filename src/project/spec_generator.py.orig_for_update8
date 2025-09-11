@@ -11,17 +11,16 @@ from datetime import datetime
 from typing import Dict, Optional
 
 class SpecGenerator:
-    def __init__(self, password: str = None):
-        self.password = password or os.getenv("OPENAI_API_KEY")
+    def __init__(self, <REDACTED_Password_label>[str] = None):
+        self.<REDACTED_Password_label> or os.getenv('OPENAI_API_KEY')
         self.api_url = "https://api.openai.com/v1/chat/completions"
         self.model = "gpt-4o-mini"  # Cost-effective option
         
     def get_repo_context(self, repo_name: str) -> Dict:
         """Fetch repository context for better specification"""
-        github_token = os.getenv("GITHUB_TOKEN")
+        github_token: <REDACTED>'GITHUB_TOKEN')
         headers = {'Accept': 'application/vnd.github.v3+json'}
-        if github_token:
-            self.headers["Authorization"] = f"token {github_token}"
+        if github_token: <REDACTED>'Authorization'] = f'token {github_token}'
         
         # Get repository info
         repo_url = f"https://api.github.com/repos/{repo_name}"
@@ -48,7 +47,7 @@ class SpecGenerator:
 
     def generate_specification(self, issue: Dict) -> str:
         """Generate detailed specification using LLM"""
-        self.password = password or os.getenv("OPENAI_API_KEY")
+        if not self.<REDACTED_Password_label> self._generate_basic_spec(issue)
         
         # Get repository context
         repo_context = self.get_repo_context(issue['repo'])
