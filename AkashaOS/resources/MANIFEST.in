@@ -1,5 +1,0 @@
-
-include README.md
-include README_UPDATE.md
-recursive-include marketplace *
-recursive-include akasha_modules *
