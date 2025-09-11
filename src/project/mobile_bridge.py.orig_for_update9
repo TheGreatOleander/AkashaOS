@@ -30,7 +30,7 @@ class MobileBridge:
         # Database connection
         self.db_path = self.config.get('database_path', 'nexus_problems.db')
         
-        self.auth_token = self.config.get("mobile_bridge", {}).get("auth_token")
+        # Authentication <REDACTED_Password_label>: <REDACTED>'mobile_bridge', {}).get('auth_token')
         
         self.setup_routes()
     
@@ -56,7 +56,7 @@ class MobileBridge:
         @wraps(f)
         def decorated_function(*args, **kwargs):
             if self.auth_token:
-                token = request.headers.get("Authorization")
+                token: <REDACTED>'Authorization')
                 if not token or token != f"Bearer {self.auth_token}":
                     return jsonify({'error': 'Authentication required'}), 401
             return f(*args, **kwargs)
@@ -565,8 +565,7 @@ class MobileBridge:
         port = self.config.get('mobile_bridge', {}).get('port', 8080)
         
         logger.info(f"Starting Mobile Bridge Server on port {port}")
-        if self.auth_token:
-            logger.info("Authentication enabled")
+        if self.auth_token: <REDACTED>"Authentication enabled")
         else:
             logger.warning("Authentication disabled - consider setting an auth token")
         
