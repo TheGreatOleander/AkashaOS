@@ -53,6 +53,8 @@ class MobileBridge:
     
     def require_auth(self, f):
         """Decorator to require authentication token"""
+    def require_auth(self, f):
+        """Decorator to require authentication token"""
         @wraps(f)
         def decorated_function(*args, **kwargs):
             if self.auth_token:
