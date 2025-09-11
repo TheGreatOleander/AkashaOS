@@ -13,17 +13,16 @@ from typing import Dict, List, Optional
 from pathlib import Path
 
 class SolutionImplementer:
-    def __init__(self, password: str = None):
-        self.password = password or os.getenv("OPENAI_API_KEY")
+    def __init__(self, <REDACTED_Password_label>[str] = None):
+        self.<REDACTED_Password_label> or os.getenv('OPENAI_API_KEY')
         self.api_url = "https://api.openai.com/v1/chat/completions"
         self.model = "gpt-4o-mini"
         
     def get_repo_files(self, repo_name: str, path: str = "") -> List[Dict]:
         """Get repository file structure"""
-        github_token = os.getenv("SOLUTION_TOKEN")
+        github_token: <REDACTED>'GITHUB_TOKEN')
         headers = {'Accept': 'application/vnd.github.v3+json'}
-        if github_token:
-            self.headers["Authorization"] = f"token {github_token}"
+        if github_token: <REDACTED>'Authorization'] = f'token {github_token}'
         
         url = f"https://api.github.com/repos/{repo_name}/contents/{path}"
         response = requests.get(url, headers=headers)
@@ -34,10 +33,9 @@ class SolutionImplementer:
     
     def get_file_content(self, repo_name: str, file_path: str) -> str:
         """Get specific file content from repository"""
-        github_token = os.getenv("SOLUTION_TOKEN")
+        github_token: <REDACTED>'GITHUB_TOKEN')
         headers = {'Accept': 'application/vnd.github.v3+json'}
-        if github_token:
-            self.headers["Authorization"] = f"token {github_token}"
+        if github_token: <REDACTED>'Authorization'] = f'token {github_token}'
         
         url = f"https://api.github.com/repos/{repo_name}/contents/{file_path}"
         response = requests.get(url, headers=headers)
@@ -91,7 +89,7 @@ class SolutionImplementer:
     
     def generate_solution(self, issue: Dict, spec_content: str, codebase_info: Dict) -> Dict:
         """Generate solution code using LLM"""
-        self.password = password or os.getenv("OPENAI_API_KEY")
+        if not self.<REDACTED_Password_label> self._generate_basic_solution(issue, spec_content)
         
         # Build context-aware prompt
         prompt = f"""You are implementing a solution for a GitHub issue. Generate clean, working code.
