@@ -167,12 +167,12 @@ class DatabaseManager:
 class GitHubScanner:
     """Scans GitHub for high-leverage problems"""
     
-    def __init__(self, github_token=None):
-        self.github_token = github_token
+    def __init__(self, github_token: <REDACTED> = None):
+        self.github_token: <REDACTED>
         self.headers = {}
-        if github_token:
-            self.headers['Authorization'] = f'token {github_token}'
-
+        if github_token: <REDACTED>'Authorization'] = f'token {github_token}'
+    
+    def search_issues(self, query: str, per_page: int = 30) -> List[Dict]:
         """Search GitHub issues based on query"""
         url = "https://api.github.com/search/issues"
         params = {
