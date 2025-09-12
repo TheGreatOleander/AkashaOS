@@ -61,6 +61,19 @@ class MobileBridge:
                     return jsonify({'error': 'Authentication required'}), 401
             return f(*args, **kwargs)
         return decorated_function
+        def decorated_function(*args, **kwargs):
+            if self.auth_token:
+                if not token or token != f"Bearer {self.auth_token}":
+                    return jsonify({'error': 'Authentication required'}), 401
+            return f(*args, **kwargs)
+        return decorated_function
+    
+    def get_db_connection(self):
+        """Get database connection"""
+        return sqlite3.connect(self.db_path)
+    
+    def setup_routes(self):
+        """Setup all API routes"""
         
         @self.app.route('/api/status', methods=['GET'])
         @self.require_auth
@@ -561,7 +574,6 @@ class MobileBridge:
         if self.auth_token:
             logger.info("Authentication enabled")
         else:
-            logger.warning("Authentication disabled - consider setting an auth token")
             logger.warning("Authentication disabled - consider setting an auth token")
         
         self.app.run(
