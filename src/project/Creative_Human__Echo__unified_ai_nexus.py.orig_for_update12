@@ -64,7 +64,7 @@ class Problem:
 class DatabaseManager:
     """Manages the SQLite database for problem tracking"""
     
-    def __init__(self, github_token: str = None):
+    def __init__(self, db_path: str = "nexus_problems.db"):
         self.db_path = db_path
         self.init_database()
     
@@ -167,11 +167,10 @@ class DatabaseManager:
 class GitHubScanner:
     """Scans GitHub for high-leverage problems"""
     
-    def __init__(self, github_token: str = None):
-        self.github_token = github_token
+    def __init__(self, github_token: <REDACTED> = None):
+        self.github_token: <REDACTED>
         self.headers = {}
-        if github_token:
-            self.headers['Authorization'] = f'token {github_token}'
+        if github_token: <REDACTED>'Authorization'] = f'token {github_token}'
     
     def search_issues(self, query: str, per_page: int = 30) -> List[Dict]:
         """Search GitHub issues based on query"""
@@ -290,7 +289,7 @@ class GitHubScanner:
 class AIInterface:
     """Interface for AI chat and problem-solving assistance"""
     
-    def __init__(self, github_token: str = None):
+    def __init__(self, config: Dict):
         self.config = config
         self.chat_history = []
     
@@ -317,7 +316,7 @@ class AIInterface:
 class WorkSession:
     """Manages focused work sessions on problems"""
     
-    def __init__(self, github_token: str = None):
+    def __init__(self, problem: Problem, db_manager: DatabaseManager):
         self.problem = problem
         self.db_manager = db_manager
         self.start_time = None
@@ -369,7 +368,7 @@ class WorkSession:
 class UnifiedNexus:
     """Main class that unifies all components"""
     
-    def __init__(self, github_token: str = None):
+    def __init__(self, config_path: str = "nexus_config.yaml"):
         self.config = self.load_config(config_path)
         self.db_manager = DatabaseManager(self.config.get('database_path', 'nexus_problems.db'))
         self.github_scanner = GitHubScanner(self.config.get('github_token'))
