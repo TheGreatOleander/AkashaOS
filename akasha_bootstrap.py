@@ -24,38 +24,60 @@
 
 
 
-# --- AkashaOS Dashboard Server Integration ---
-from flask import Flask, send_from_directory, jsonify, request
+# --- AkashaOS Dashboard Wiring (Update 015) ---
+import threading, time
+from core import loop
 
-app = Flask(__name__)
+loop_running = False
+loop_thread = None
 
-# Dummy state
-STATE = {
-    "curiosity": 42,
-    "synthesis": 67,
-    "flow": 88,
-    "logs": ["System booted", "Dashboard online"]
-}
+def loop_worker():
+    global loop_running
+    while loop_running:
+        try:
+            result = loop.mirror_loop()
+            STATE['logs'].append(f"Mirror loop result: {result}")
+            if len(STATE['logs']) > 10:
+                STATE['logs'].pop(0)
+        except Exception as e:
+            STATE['logs'].append(f"Loop error: {e}")
+        time.sleep(2)
 
-@app.route('/')
-def dashboard_index():
-    return send_from_directory('resources/dashboard', 'akasha-unified-dashboard.html')
+@app.route('/api/action/start_loop', methods=['POST'])
+def api_start_loop():
+    global loop_running, loop_thread
+    if not loop_running:
+        loop_running = True
+        loop_thread = threading.Thread(target=loop_worker, daemon=True)
+        loop_thread.start()
+        STATE['logs'].append("Mirror loop started")
+    return ('', 204)
 
-@app.route('/api/state')
-def api_state():
-    return jsonify(STATE)
-
-@app.route('/api/action/<name>', methods=['POST'])
-def api_action(name):
-    STATE['logs'].append(f"Action triggered: {name}")
+@app.route('/api/action/step_loop', methods=['POST'])
+def api_step_loop():
+    try:
+        result = loop.mirror_loop()
+        STATE['logs'].append(f"Step result: {result}")
+    except Exception as e:
+        STATE['logs'].append(f"Step error: {e}")
     if len(STATE['logs']) > 10:
         STATE['logs'].pop(0)
     return ('', 204)
 
-def run_dashboard():
-    print("Serving AkashaOS Dashboard at http://127.0.0.1:5000")
-    app.run(host="127.0.0.1", port=5000)
-# --- End Dashboard Integration ---
+@app.route('/api/action/pause_loop', methods=['POST'])
+def api_pause_loop():
+    global loop_running
+    loop_running = False
+    STATE['logs'].append("Mirror loop paused")
+    if len(STATE['logs']) > 10:
+        STATE['logs'].pop(0)
+    return ('', 204)
 
-if __name__ == '__main__':
-    run_dashboard()
+@app.route('/api/action/synthesize', methods=['POST'])
+def api_synthesize():
+    # Placeholder for truths/nudges integration
+    STATE['logs'].append("Synthesis action triggered (stub)")
+    if len(STATE['logs']) > 10:
+        STATE['logs'].pop(0)
+    return ('', 204)
+# --- End Dashboard Wiring ---
