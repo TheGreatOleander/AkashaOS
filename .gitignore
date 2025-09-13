@@ -27,3 +27,11 @@ Thumbs.db
 *.pem
 .env
 secrets.*
+
+# Backup / update / temp files
+*~
+*.bak
+*.orig*
+*.swp
+*.tmp
+*.old
