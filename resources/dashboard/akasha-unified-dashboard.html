@@ -685,27 +685,26 @@
         // Initial activity
         addActivity('AkashaOS dashboard initialized - all systems ready');
     </script>
-
-<div class="card">
-  <h2>Symbiotic Trust — Flare Phrase</h2>
-  <label>Flare phrase: <input type="text" id="flare-input" placeholder="enter flare phrase"></label>
-  <button onclick="verifyFlare()">Verify Flare</button>
-  <p id="flare-status">Flare status: Unknown</p>
+<div class="card" id="autopilot-panel">
+  <h2>Autopilot</h2>
+  <button onclick="autopilotAction('scout')">Scout</button>
+  <button onclick="autopilotAction('trial')">Trial</button>
+  <button onclick="autopilotAction('apply')">Apply</button>
+  <div id="autopilot-result"></div>
 </div>
 <script>
-async function verifyFlare(){
-    let phrase = document.getElementById('flare-input').value;
-    let res = await fetch('/api/action/verify_flare', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({phrase: phrase})
-    });
-    if(res.status===204){
-        // success; refresh state to get status
-        refreshState();
-    } else {
-        let j = await res.json().catch(()=>({status:'error'}));
-        document.getElementById('flare-status').innerText = 'Flare status: ' + (j.status || 'error');
+async function autopilotAction(action) {
+    try {
+        let res = await fetch('/api/action/autopilot_' + action, {method: 'POST'});
+        if (res.status === 204) {
+            document.getElementById('autopilot-result').innerText = action + ' started (simulated)';
+        } else {
+            let txt = await res.text();
+            document.getElementById('autopilot-result').innerText = txt;
+        }
+        if (window.refreshState) window.refreshState();
+    } catch (e) {
+        document.getElementById('autopilot-result').innerText = 'Error: ' + e;
     }
 }
 </script>

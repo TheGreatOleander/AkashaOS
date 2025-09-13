@@ -21,34 +21,3 @@
      for i in range(5):
          print(f'[{i+1}] Akasha heartbeat — {time.strftime("%Y-%m-%d %H:%M:%S") }')
          time.sleep(1)
-
-
-# --- Autopilot Integration (update_021) ---
-try:
-    from flask import request
-except Exception:
-    request = None
-
-def _log_autopilot(action):
-    try:
-        STATE['logs'].append(f"Autopilot: {action}")
-        if len(STATE['logs'])>50:
-            STATE['logs'].pop(0)
-    except Exception:
-        pass
-
-@app.route('/api/action/autopilot_scout', methods=['POST'])
-def autopilot_scout():
-    _log_autopilot('Scouting for updates (simulated)')
-    return ('', 204)
-
-@app.route('/api/action/autopilot_trial', methods=['POST'])
-def autopilot_trial():
-    _log_autopilot('Trial run simulated')
-    return ('', 204)
-
-@app.route('/api/action/autopilot_apply', methods=['POST'])
-def autopilot_apply():
-    _log_autopilot('Apply run simulated')
-    return ('', 204)
-# --- end Autopilot Integration ---
