@@ -1,0 +1,1 @@
+Veil module: applies mentor nudges and truths to final outputs. Auto-generated stub by assistant.
