@@ -24,39 +24,31 @@
 
 
 
-# --- AkashaOS Dashboard Wiring (Update 017: Curiosity & Flow integration) ---
-import threading, time, random
+# --- AI Guard Integration ---
+import random
 try:
-    from akashaos import curiosity
+    from ai_guard.ai_guard import AIGuard
+    AI_GUARD_ENABLED = True
 except ImportError:
-    curiosity = None
-import nudges
+    AI_GUARD_ENABLED = False
 
-def curiosity_flow_worker():
-    while True:
-        try:
-            if curiosity:
-                spark_val = curiosity.spark()
-                explore_val = curiosity.explore()
-                score = len(spark_val) + len(explore_val)
-                STATE['curiosity'] = min(100, score)
-            else:
-                STATE['curiosity'] = random.randint(0, 100)
-        except Exception as e:
-            STATE['curiosity'] = random.randint(0, 100)
-            STATE['logs'].append(f"Curiosity error: {e}")
-            if len(STATE['logs']) > 10:
-                STATE['logs'].pop(0)
-        try:
-            nudge_val = nudges.gentle_nudge(random.randint(0, len(nudges.NUDGES)-1))
-            STATE['flow'] = min(100, len(nudge_val))
-        except Exception as e:
-            STATE['flow'] = random.randint(0, 100)
-            STATE['logs'].append(f"Flow error: {e}")
-            if len(STATE['logs']) > 10:
-                STATE['logs'].pop(0)
-        time.sleep(5)
+def run_ai_guard_check():
+    if not AI_GUARD_ENABLED:
+        return "AI Guard not available"
+    try:
+        guard = AIGuard(user_id="default")
+        # For now, fake timings instead of real keystrokes
+        timings = [random.uniform(0.3, 0.7) for _ in range(5)]
+        score = guard.score_attempt(timings)
+        if score >= 70:
+            msg = f"✅ AI Guard: User verified (score {score})"
+        else:
+            msg = f"⚠️ AI Guard: Suspicious profile detected (score {score})"
+        print(msg)
+        return msg
+    except Exception as e:
+        return f"AI Guard error: {e}"
+# --- End AI Guard Integration ---
 
-# Launch background thread
-threading.Thread(target=curiosity_flow_worker, daemon=True).start()
-# --- End Update 017 ---
+# Run AI Guard check at startup
+print(run_ai_guard_check())

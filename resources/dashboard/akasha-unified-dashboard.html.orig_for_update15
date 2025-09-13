@@ -685,19 +685,5 @@
         // Initial activity
         addActivity('AkashaOS dashboard initialized - all systems ready');
     </script>
-
-<div class="card">
-  <h2>Symbiotic Trust</h2>
-  <label><input type="checkbox" id="aiguard-toggle" onchange="toggleAIGuard()"> Enable AI Guard</label>
-  <p id="aiguard-status">AI Guard status: Unknown</p>
-</div>
-<script>
-async function toggleAIGuard() {
-    let enabled = document.getElementById('aiguard-toggle').checked;
-    await fetch('/api/action/aiguard_' + (enabled ? 'enable' : 'disable'), {method: 'POST'});
-    refreshState();
-}
-</script>
-
 </body>
 </html>
