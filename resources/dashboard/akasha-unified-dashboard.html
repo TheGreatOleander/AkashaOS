@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkashaOS - Unified Command Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a, #1a1a2e, #16213e);
+            color: #00ff88;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background: rgba(0, 0, 0, 0.8);
+            border-right: 2px solid #00ff88;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #ffaa00;
+            font-size: 1.8em;
+            text-shadow: 0 0 20px #ffaa00;
+            margin-bottom: 10px;
+        }
+
+        .logo p {
+            color: #00ff88;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .nav-section {
+            margin-bottom: 25px;
+        }
+
+        .nav-section h3 {
+            color: #00ff88;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+        }
+
+        .nav-item {
+            padding: 8px 12px;
+            margin-bottom: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #333;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(0, 255, 136, 0.1);
+            border-color: #00ff88;
+            transform: translateX(5px);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff6b6b;
+        }
+
+        .status-indicator.online {
+            background: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        }
+
+        .status-indicator.active {
+            background: #ffaa00;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #00ff88;
+        }
+
+        .header h2 {
+            color: #ffaa00;
+            font-size: 1.5em;
+        }
+
+        .system-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 0.9em;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .panel {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #444;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+
+        .panel h3 {
+            color: #ffaa00;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mirror-loop {
+            background: rgba(0, 255, 136, 0.05);
+            border-color: #00ff88;
+        }
+
+        .loop-diagram {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+
+        .loop-step {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            margin: 0 2px;
+            transition: all 0.3s ease;
+        }
+
+        .loop-step.active {
+            background: rgba(255, 170, 0, 0.2);
+            color: #ffaa00;
+            transform: scale(1.05);
+        }
+
+        .loop-step::after {
+            content: '→';
+            position: absolute;
+            right: -15px;
+            color: #666;
+        }
+
+        .loop-step:last-child::after {
+            display: none;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .btn:hover {
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn.primary {
+            background: rgba(255, 170, 0, 0.1);
+            border-color: #ffaa00;
+            color: #ffaa00;
+        }
+
+        .btn.danger {
+            background: rgba(255, 107, 107, 0.1);
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .activity-feed {
+            max-height: 200px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 0.8em;
+        }
+
+        .activity-item {
+            margin-bottom: 8px;
+            padding: 5px;
+            border-left: 3px solid #00ff88;
+            padding-left: 10px;
+        }
+
+        .activity-item.warning {
+            border-left-color: #ffaa00;
+            color: #ffaa00;
+        }
+
+        .activity-item.error {
+            border-left-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .system-overview {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .system-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .system-card:hover {
+            border-color: #00ff88;
+            transform: translateY(-3px);
+        }
+
+        .system-card h4 {
+            color: #ffaa00;
+            margin-bottom: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: -300px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.open {
+                left: 0;
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .system-overview {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <div class="logo">
+                <h1>AkashaOS</h1>
+                <p>"An operating system not for machines, but for ideas."</p>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core Systems</h3>
+                <div class="nav-item active" onclick="showPanel('overview')">
+                    <div class="status-indicator online"></div>
+                    System Overview
+                </div>
+                <div class="nav-item" onclick="showPanel('mirror-loop')">
+                    <div class="status-indicator active"></div>
+                    Mirror Loop
+                </div>
+                <div class="nav-item" onclick="showPanel('memory')">
+                    <div class="status-indicator online"></div>
+                    Memory (Mnemosyne)
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <h3>AI Systems</h3>
+                <div class="nav-item" onclick="showPanel('bridge')">
+                    <div class="status-indicator online"></div>
+                    AI Chat Bridge
+                </div>
+                <div class="nav-item" onclick="showPanel('hive-mind')">
+                    <div class="status-indicator"></div>
+                    Hive-Mind Network
+                </div>
+                <div class="nav-item" onclick="showPanel('consensus')">
+                    <div class="status-indicator online"></div>
+                    Consensus Engine
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <h3>Infrastructure</h3>
+                <div class="nav-item" onclick="showPanel('android-farm')">
+                    <div class="status-indicator"></div>
+                    Android Farm
+                </div>
+                <div class="nav-item" onclick="showPanel('empire')">
+                    <div class="status-indicator online"></div>
+                    Empire Control
+                </div>
+                <div class="nav-item" onclick="showPanel('ouroboros')">
+                    <div class="status-indicator online"></div>
+                    Ouroboros Loops
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <h3>Creative Tools</h3>
+                <div class="nav-item" onclick="showPanel('resonance')">
+                    <div class="status-indicator online"></div>
+                    Grand Resonance
+                </div>
+                <div class="nav-item" onclick="showPanel('opportunity')">
+                    <div class="status-indicator active"></div>
+                    Opportunity Nexus
+                </div>
+                <div class="nav-item" onclick="showPanel('temple')">
+                    <div class="status-indicator online"></div>
+                    Temple Wisdom
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Header -->
+            <div class="header">
+                <h2 id="panel-title">System Overview</h2>
+                <div class="system-stats">
+                    <div class="stat">
+                        <span class="stat-value" id="uptime">72:14:33</span>
+                        <span>Uptime</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="mirror-cycles">1,247</span>
+                        <span>Mirror Cycles</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value" id="active-systems">8</span>
+                        <span>Active Systems</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Content Panels -->
+            <div id="overview-panel" class="panel-content">
+                <div class="system-overview">
+                    <div class="system-card" onclick="showPanel('mirror-loop')">
+                        <h4>Mirror Loop Engine</h4>
+                        <div class="status-indicator active"></div>
+                        <p>Core reflection system running</p>
+                    </div>
+                    <div class="system-card" onclick="showPanel('bridge')">
+                        <h4>AI Chat Bridge</h4>
+                        <div class="status-indicator online"></div>
+                        <p>Cross-AI communication active</p>
+                    </div>
+                    <div class="system-card" onclick="showPanel('memory')">
+                        <h4>Mnemosyne Memory</h4>
+                        <div class="status-indicator online"></div>
+                        <p>Knowledge graph building</p>
+                    </div>
+                    <div class="system-card" onclick="showPanel('empire')">
+                        <h4>Empire Command</h4>
+                        <div class="status-indicator online"></div>
+                        <p>Notification system ready</p>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="panel">
+                        <h3>🔄 Recent Activity</h3>
+                        <div class="activity-feed" id="activity-feed">
+                            <div class="activity-item">
+                                [14:23:15] Mirror loop completed - new insight generated
+                            </div>
+                            <div class="activity-item">
+                                [14:22:45] AI Bridge: GPT-4 → Claude conversation compressed
+                            </div>
+                            <div class="activity-item warning">
+                                [14:21:30] Android Farm: 2 devices offline
+                            </div>
+                            <div class="activity-item">
+                                [14:20:18] Opportunity discovered: "Need simple CSV validator"
+                            </div>
+                            <div class="activity-item">
+                                [14:19:42] Empire notification sent to Telegram
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <h3>🧠 System Intelligence</h3>
+                        <div style="margin: 15px 0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Curiosity Level:</span>
+                                <span style="color: #00ff88;">87%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Knowledge Synthesis:</span>
+                                <span style="color: #ffaa00;">92%</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span>Creative Flow:</span>
+                                <span style="color: #00ff88;">78%</span>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <button class="btn" onclick="triggerReflection()">Reflect Now</button>
+                            <button class="btn" onclick="synthesizeKnowledge()">Synthesize</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mirror Loop Panel -->
+            <div id="mirror-loop-panel" class="panel-content hidden">
+                <div class="panel mirror-loop">
+                    <h3>🔮 Mirror Loop Engine</h3>
+                    <div class="loop-diagram">
+                        <div class="loop-step active">
+                            Curiosity<br>
+                            <small>Ask questions</small>
+                        </div>
+                        <div class="loop-step">
+                            Codex<br>
+                            <small>Reflect deeply</small>
+                        </div>
+                        <div class="loop-step">
+                            Temple<br>
+                            <small>Structure wisdom</small>
+                        </div>
+                        <div class="loop-step">
+                            Veil<br>
+                            <small>Reveal insights</small>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 5px; margin: 15px 0;">
+                        <strong>Current Reflection:</strong><br>
+                        <em>"What emerges when human creativity meets artificial intelligence in a space of mutual respect and shared curiosity?"</em>
+                    </div>
+
+                    <div class="controls">
+                        <button class="btn primary" onclick="startMirrorLoop()">Start Loop</button>
+                        <button class="btn" onclick="stepLoop()">Single Step</button>
+                        <button class="btn danger" onclick="pauseLoop()">Pause</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>📊 Loop Analytics</h3>
+                    <div style="margin: 15px 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Cycles Today:</span>
+                            <span style="color: #00ff88;">247</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Insights Generated:</span>
+                            <span style="color: #ffaa00;">43</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span>Knowledge Fragments:</span>
+                            <span style="color: #00ff88;">1,829</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add more panels for other systems... -->
+        </div>
+    </div>
+
+    <script>
+        // Panel management
+        function showPanel(panelName) {
+            // Hide all panels
+            document.querySelectorAll('.panel-content').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            
+            // Show selected panel
+            const targetPanel = document.getElementById(panelName + '-panel');
+            if (targetPanel) {
+                targetPanel.classList.remove('hidden');
+            } else {
+                document.getElementById('overview-panel').classList.remove('hidden');
+            }
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Update title
+            const titles = {
+                'overview': 'System Overview',
+                'mirror-loop': 'Mirror Loop Engine',
+                'memory': 'Mnemosyne Memory System',
+                'bridge': 'AI Chat Bridge',
+                'hive-mind': 'AI Hive-Mind Network',
+                'android-farm': 'Android Farm Controller',
+                'empire': 'Empire Command Center',
+                'resonance': 'Grand Resonance',
+                'opportunity': 'Opportunity Nexus'
+            };
+            
+            document.getElementById('panel-title').textContent = titles[panelName] || 'AkashaOS Dashboard';
+        }
+
+        // Mirror Loop Functions
+        let loopRunning = false;
+        let currentStep = 0;
+        const steps = ['Curiosity', 'Codex', 'Temple', 'Veil'];
+
+        function startMirrorLoop() {
+            loopRunning = true;
+            animateLoop();
+            addActivity('Mirror loop started - entering reflection cycle');
+        }
+
+        function stepLoop() {
+            currentStep = (currentStep + 1) % 4;
+            updateLoopDisplay();
+            addActivity(`Mirror loop step: ${steps[currentStep]} phase active`);
+        }
+
+        function pauseLoop() {
+            loopRunning = false;
+            addActivity('Mirror loop paused - reflection cycle halted');
+        }
+
+        function updateLoopDisplay() {
+            document.querySelectorAll('.loop-step').forEach((step, index) => {
+                step.classList.toggle('active', index === currentStep);
+            });
+        }
+
+        function animateLoop() {
+            if (!loopRunning) return;
+            
+            stepLoop();
+            setTimeout(() => {
+                if (loopRunning) animateLoop();
+            }, 3000);
+        }
+
+        // System Functions
+        function triggerReflection() {
+            addActivity('Manual reflection triggered - processing current state');
+            // Simulate processing
+            setTimeout(() => {
+                addActivity('Reflection complete - new insights integrated');
+            }, 2000);
+        }
+
+        function synthesizeKnowledge() {
+            addActivity('Knowledge synthesis initiated - connecting fragments');
+            setTimeout(() => {
+                addActivity('Synthesis complete - 3 new connections discovered');
+            }, 3000);
+        }
+
+        // Activity Feed
+        function addActivity(message) {
+            const feed = document.getElementById('activity-feed');
+            const item = document.createElement('div');
+            item.className = 'activity-item';
+            item.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            
+            feed.insertBefore(item, feed.firstChild);
+            
+            // Keep only last 20 items
+            while (feed.children.length > 20) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+
+        // Auto-update system stats
+        function updateStats() {
+            // Simulate real-time updates
+            const cycles = parseInt(document.getElementById('mirror-cycles').textContent.replace(',', ''));
+            document.getElementById('mirror-cycles').textContent = (cycles + 1).toLocaleString();
+        }
+
+        // Initialize
+        setInterval(updateStats, 30000); // Update every 30 seconds
+        setInterval(() => {
+            const activities = [
+                'System heartbeat - all modules responding',
+                'Memory consolidation cycle completed',
+                'New knowledge fragment integrated',
+                'Cross-system sync in progress'
+            ];
+            addActivity(activities[Math.floor(Math.random() * activities.length)]);
+        }, 45000);
+
+        // Initial activity
+        addActivity('AkashaOS dashboard initialized - all systems ready');
+    </script>
+
+<script>
+async function refreshState() {
+    try {
+        let res = await fetch('/api/state');
+        let data = await res.json();
+        document.getElementById('curiosity').innerText = data.curiosity + '%';
+        document.getElementById('synthesis').innerText = data.synthesis + '%';
+        document.getElementById('flow').innerText = data.flow + '%';
+        let feed = document.getElementById('activity-feed');
+        feed.innerHTML = '';
+        data.logs.forEach(log => {
+            let li = document.createElement('li');
+            li.innerText = log;
+            feed.appendChild(li);
+        });
+    } catch (e) { console.error(e); }
+}
+async function doAction(name) {
+    await fetch('/api/action/' + name, {method: 'POST'});
+    refreshState();
+}
+setInterval(refreshState, 5000);
+window.onload = refreshState;
+</script>
+
+</body>
+</html>
