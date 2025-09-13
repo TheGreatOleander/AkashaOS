@@ -21,26 +21,3 @@
      for i in range(5):
          print(f'[{i+1}] Akasha heartbeat — {time.strftime("%Y-%m-%d %H:%M:%S") }')
          time.sleep(1)
-
-
-
-# --- AkashaOS Dashboard Wiring (Update 016: Synthesis integration) ---
-import random
-import nudges, truths
-
-@app.route('/api/action/synthesize', methods=['POST'])
-def api_synthesize():
-    try:
-        truth = truths.drop_truth(random.randint(0, len(truths.TRUTHS)-1))
-        nudge = nudges.gentle_nudge(random.randint(0, len(nudges.NUDGES)-1))
-        synthesis_output = f"SYNTHESIS → Truth: '{truth}' | Nudge: '{nudge}'"
-        STATE['logs'].append(synthesis_output)
-        if len(STATE['logs']) > 10:
-            STATE['logs'].pop(0)
-        STATE['synthesis'] = random.randint(50, 100)
-    except Exception as e:
-        STATE['logs'].append(f"Synthesis error: {e}")
-        if len(STATE['logs']) > 10:
-            STATE['logs'].pop(0)
-    return ('', 204)
-# --- End Update 016 ---
