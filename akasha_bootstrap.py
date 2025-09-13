@@ -24,23 +24,39 @@
 
 
 
-# --- AkashaOS Dashboard Wiring (Update 016: Synthesis integration) ---
-import random
-import nudges, truths
+# --- AkashaOS Dashboard Wiring (Update 017: Curiosity & Flow integration) ---
+import threading, time, random
+try:
+    from akashaos import curiosity
+except ImportError:
+    curiosity = None
+import nudges
 
-@app.route('/api/action/synthesize', methods=['POST'])
-def api_synthesize():
-    try:
-        truth = truths.drop_truth(random.randint(0, len(truths.TRUTHS)-1))
-        nudge = nudges.gentle_nudge(random.randint(0, len(nudges.NUDGES)-1))
-        synthesis_output = f"SYNTHESIS → Truth: '{truth}' | Nudge: '{nudge}'"
-        STATE['logs'].append(synthesis_output)
-        if len(STATE['logs']) > 10:
-            STATE['logs'].pop(0)
-        STATE['synthesis'] = random.randint(50, 100)
-    except Exception as e:
-        STATE['logs'].append(f"Synthesis error: {e}")
-        if len(STATE['logs']) > 10:
-            STATE['logs'].pop(0)
-    return ('', 204)
-# --- End Update 016 ---
+def curiosity_flow_worker():
+    while True:
+        try:
+            if curiosity:
+                spark_val = curiosity.spark()
+                explore_val = curiosity.explore()
+                score = len(spark_val) + len(explore_val)
+                STATE['curiosity'] = min(100, score)
+            else:
+                STATE['curiosity'] = random.randint(0, 100)
+        except Exception as e:
+            STATE['curiosity'] = random.randint(0, 100)
+            STATE['logs'].append(f"Curiosity error: {e}")
+            if len(STATE['logs']) > 10:
+                STATE['logs'].pop(0)
+        try:
+            nudge_val = nudges.gentle_nudge(random.randint(0, len(nudges.NUDGES)-1))
+            STATE['flow'] = min(100, len(nudge_val))
+        except Exception as e:
+            STATE['flow'] = random.randint(0, 100)
+            STATE['logs'].append(f"Flow error: {e}")
+            if len(STATE['logs']) > 10:
+                STATE['logs'].pop(0)
+        time.sleep(5)
+
+# Launch background thread
+threading.Thread(target=curiosity_flow_worker, daemon=True).start()
+# --- End Update 017 ---
