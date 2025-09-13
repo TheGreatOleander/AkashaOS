@@ -1,0 +1,1 @@
+Update 024: Added MANIFESTO.md, FLARE_SPEC.md, and CONNECTOR_TEMPLATE.md into docs/.
