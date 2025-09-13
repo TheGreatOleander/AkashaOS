@@ -1,1 +1,1 @@
-# Empty module initializer
+# ai_guard package

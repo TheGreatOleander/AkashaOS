@@ -687,15 +687,26 @@
     </script>
 
 <div class="card">
-  <h2>Symbiotic Trust</h2>
-  <label><input type="checkbox" id="aiguard-toggle" onchange="toggleAIGuard()"> Enable AI Guard</label>
-  <p id="aiguard-status">AI Guard status: Unknown</p>
+  <h2>Symbiotic Trust — Flare Phrase</h2>
+  <label>Flare phrase: <input type="text" id="flare-input" placeholder="enter flare phrase"></label>
+  <button onclick="verifyFlare()">Verify Flare</button>
+  <p id="flare-status">Flare status: Unknown</p>
 </div>
 <script>
-async function toggleAIGuard() {
-    let enabled = document.getElementById('aiguard-toggle').checked;
-    await fetch('/api/action/aiguard_' + (enabled ? 'enable' : 'disable'), {method: 'POST'});
-    refreshState();
+async function verifyFlare(){
+    let phrase = document.getElementById('flare-input').value;
+    let res = await fetch('/api/action/verify_flare', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({phrase: phrase})
+    });
+    if(res.status===204){
+        // success; refresh state to get status
+        refreshState();
+    } else {
+        let j = await res.json().catch(()=>({status:'error'}));
+        document.getElementById('flare-status').innerText = 'Flare status: ' + (j.status || 'error');
+    }
 }
 </script>
 

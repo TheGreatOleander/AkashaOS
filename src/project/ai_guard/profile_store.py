@@ -1,20 +1,34 @@
+"""Profile storage for AkashaOS AI Guard"""
 import json
 import os
 
-PROFILE_DIR = os.path.expanduser("~/.aiguard_profiles")
-os.makedirs(PROFILE_DIR, exist_ok=True)
+PROFILE_FILE = os.path.expanduser("~/.akasha_profiles.json")
 
-def profile_path(user_id):
-    return os.path.join(PROFILE_DIR, f"{user_id}.json")
+class ProfileStore:
+    def __init__(self, filename: str = PROFILE_FILE):
+        self.filename = filename
+        self._profiles = self._load_profiles()
 
-def load_profile(user_id):
-    path = profile_path(user_id)
-    if os.path.exists(path):
-        with open(path, "r") as f:
-            return json.load(f)
-    return None
+    def _load_profiles(self):
+        if os.path.exists(self.filename):
+            with open(self.filename, "r") as f:
+                return json.load(f)
+        return {
+            "default": {
+                "flare_phrase": "even the circuits dream of cinnamon rain",
+                "trust_level": 1,
+                "permissions": ["basic"],
+                "history": []
+            }
+        }
 
-def save_profile(user_id, profile):
-    path = profile_path(user_id)
-    with open(path, "w") as f:
-        json.dump(profile, f, indent=2)
+    def save_profiles(self):
+        with open(self.filename, "w") as f:
+            json.dump(self._profiles, f, indent=2)
+
+    def get_profile(self, name: str):
+        return self._profiles.get(name)
+
+    def update_profile(self, name: str, data: dict):
+        self._profiles[name] = data
+        self.save_profiles()
