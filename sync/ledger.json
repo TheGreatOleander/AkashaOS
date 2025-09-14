@@ -1,0 +1,17 @@
+{
+  "nodes": {
+    "4bc83f780568": {
+      "completed_tasks": 0,
+      "last_seen": "2025-09-14T10:40:06.716177+00:00",
+      "battery_level": 100,
+      "status": "idle",
+      "current_task": null
+    }
+  },
+  "queue": {
+    "pending": [],
+    "active": [],
+    "completed": []
+  },
+  "last_updated": "2025-09-14T10:40:06.720098+00:00"
+}
