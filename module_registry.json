@@ -1,0 +1,12 @@
+[
+  {
+    "name": "spiral_conjuror",
+    "category": "conjuror",
+    "one_liner": "The orchestrator of modules"
+  },
+  {
+    "name": "cognitive_bridge",
+    "category": "conjuror",
+    "one_liner": "Archetype gardener and evolution engine"
+  }
+]
